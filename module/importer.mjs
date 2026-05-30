@@ -28,18 +28,17 @@ export class TirakanCharacterImporter extends HandlebarsApplicationMixin(Applica
   async _prepareContext(options) {
     return {
       ...(await super._prepareContext(options)),
-      defaultBaseUrl: "http://localhost:3000"
+      defaultUrl: "https://tirakan.de/characters/YfD-j4_Huz7h"
     };
   }
 
   static async #onSubmit(event, form, formData) {
-    const source = String(formData.object.source ?? "").trim();
-    const baseUrl = String(formData.object.baseUrl ?? "").trim().replace(/\/$/, "");
+    const source = String(formData.object.url ?? "").trim();
     const mode = String(formData.object.mode ?? "create");
 
     try {
-      const { url, hash } = buildApiUrl(source, baseUrl);
-      const response = await fetch(url, { headers: { Accept: "application/json" } });
+      const { apiUrl, hash } = buildApiUrl(source);
+      const response = await fetch(apiUrl, { headers: { Accept: "application/json" } });
       if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
       const character = await response.json();
       const actorData = mapCharacterToActor(character, source, hash);
@@ -60,18 +59,20 @@ export class TirakanCharacterImporter extends HandlebarsApplicationMixin(Applica
   }
 }
 
-export function buildApiUrl(source, baseUrl) {
-  const hashMatch = source.match(/[A-Za-z0-9_-]{6,}/)?.[0];
-  if (!hashMatch) throw new Error(game.i18n.localize("TIRAKAN.Import.NoHash"));
-
-  if (/^https?:\/\//i.test(source)) {
-    const url = new URL(source);
-    const apiUrl = new URL(`/api/characters/${hashMatch}`, url.origin);
-    return { url: apiUrl.toString(), hash: hashMatch };
+export function buildApiUrl(source) {
+  let url;
+  try {
+    url = new URL(source);
+  } catch {
+    throw new Error(game.i18n.localize("TIRAKAN.Import.InvalidUrl"));
   }
+  if (!["http:", "https:"].includes(url.protocol)) throw new Error(game.i18n.localize("TIRAKAN.Import.InvalidUrl"));
 
-  if (!baseUrl) throw new Error(game.i18n.localize("TIRAKAN.Import.NoBaseUrl"));
-  return { url: `${baseUrl}/api/characters/${hashMatch}`, hash: hashMatch };
+  const hash = url.pathname.split("/").filter(Boolean).at(-1);
+  if (!hash) throw new Error(game.i18n.localize("TIRAKAN.Import.NoHash"));
+
+  const apiUrl = new URL(`/api/characters/${hash}`, url.origin);
+  return { apiUrl: apiUrl.toString(), hash };
 }
 
 export function mapCharacterToActor(character, source, hash) {

@@ -41,9 +41,7 @@ Hooks.once("init", () => {
     types: ["character", "nsc"],
     makeDefault: true
   });
-});
 
-Hooks.once("ready", () => {
   game.settings.registerMenu("tirakan-essential-foundry", "importCharacter", {
     name: "TIRAKAN.Import.MenuName",
     label: "TIRAKAN.Import.MenuLabel",
@@ -52,4 +50,19 @@ Hooks.once("ready", () => {
     type: TirakanCharacterImporter,
     restricted: true
   });
+
+  game.settings.register("tirakan-essential-foundry", "welcomeImportHintShown", {
+    scope: "client",
+    config: false,
+    type: Boolean,
+    default: false
+  });
+});
+
+Hooks.once("ready", async () => {
+  if (!game.user.isGM) return;
+  if (game.settings.get("tirakan-essential-foundry", "welcomeImportHintShown")) return;
+
+  ui.notifications.info(game.i18n.localize("TIRAKAN.Welcome.ImportHint"), { permanent: true });
+  await game.settings.set("tirakan-essential-foundry", "welcomeImportHintShown", true);
 });

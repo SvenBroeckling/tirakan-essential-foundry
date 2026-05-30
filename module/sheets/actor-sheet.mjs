@@ -117,7 +117,7 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         editing: editingSection === "resources",
         circles: Array.from({ length: Math.max(1, Math.min(Number(row.resource.max) || 0, 12)) + 1 }, (_, index) => ({
           value: index,
-          selected: index === 0 ? (Number(row.resource.value) || 0) === 0 : index <= (Number(row.resource.value) || 0)
+          selected: index === (Number(row.resource.value) || 0)
         }))
       })),
       conditionOptions: TIRAKAN.conditions.map((condition) => ({
@@ -150,10 +150,7 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
 
   static async #rollAttribute(event, target) {
     const attribute = target.dataset.attribute;
-    const modifier = Number(this.element.querySelector("[name='roll-modifier']")?.value ?? 0);
-    const skillName = this.element.querySelector("[name='roll-skill-name']")?.value ?? "";
-    const skillRank = Number(this.element.querySelector("[name='roll-skill-rank']")?.value ?? 1);
-    await this.document.rollAttribute(attribute, { modifier, skillName, skillRank });
+    await this.document.rollAttribute(attribute);
   }
 
   static async #addSkill() {

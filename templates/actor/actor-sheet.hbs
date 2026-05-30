@@ -55,21 +55,6 @@
   <datalist id="tirakan-paths">{{#each config.paths}}<option value="{{this}}"></option>{{/each}}</datalist>
   <datalist id="tirakan-bonds">{{#each config.bonds}}<option value="{{this}}"></option>{{/each}}</datalist>
 
-  <nav class="roll-strip">
-    <label>
-      <span>{{localize "TIRAKAN.Roll.Modifier"}}</span>
-      <input name="roll-modifier" type="number" value="0" step="5" />
-    </label>
-    <label>
-      <span>{{localize "TIRAKAN.Roll.Skill"}}</span>
-      <input name="roll-skill-name" type="text" />
-    </label>
-    <label>
-      <span>{{localize "TIRAKAN.Roll.SkillRank"}}</span>
-      <input name="roll-skill-rank" type="number" value="1" min="0" max="4" />
-    </label>
-  </nav>
-
   <div class="sheet-tab-layout">
     <nav class="sheet-tabs" aria-label="{{localize 'TIRAKAN.Tab.Navigation'}}">
       {{#each tabs}}
@@ -88,7 +73,7 @@
               <button type="button" data-action="rollAttribute" data-attribute="{{key}}" title="{{localize 'TIRAKAN.Roll.Roll'}}">
                 <i class="fa-solid fa-dice"></i>
               </button>
-              <div class="rank-label"><strong>{{label}}</strong><span class="rank-target">{{localize "TIRAKAN.Roll.Target"}} {{target}}</span></div>
+              <div class="rank-label"><strong>{{label}}</strong></div>
               <div class="rank-circles">
                 {{#each circles}}
                   {{#if ../editing}}
@@ -115,7 +100,6 @@
                     <span class="rank-circle condition-circle" data-readonly="true" data-selected="{{selected}}">{{value}}</span>
                   {{/if}}
                 {{/each}}
-                <span class="resource-total">{{resource.value}} / {{resource.max}}</span>
               </div>
             </div>
           {{/each}}
