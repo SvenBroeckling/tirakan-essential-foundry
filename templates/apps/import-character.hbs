@@ -1,0 +1,21 @@
+<div class="tirakan-import-form">
+  <p>{{localize "TIRAKAN.Import.Help"}}</p>
+  <label>
+    <span>{{localize "TIRAKAN.Import.Source"}}</span>
+    <input name="source" type="text" placeholder="https://example.test/characters/abc123 or abc123" required />
+  </label>
+  <label>
+    <span>{{localize "TIRAKAN.Import.BaseUrl"}}</span>
+    <input name="baseUrl" type="url" value="{{defaultBaseUrl}}" />
+  </label>
+  <label>
+    <span>{{localize "TIRAKAN.Import.Mode"}}</span>
+    <select name="mode">
+      <option value="create">{{localize "TIRAKAN.Import.Create"}}</option>
+      <option value="update">{{localize "TIRAKAN.Import.Update"}}</option>
+    </select>
+  </label>
+  <footer>
+    <button type="submit"><i class="fa-solid fa-file-import"></i> {{localize "TIRAKAN.Import.Submit"}}</button>
+  </footer>
+</div>

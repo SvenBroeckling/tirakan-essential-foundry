@@ -1,0 +1,8 @@
+<div class="tirakan-chat-card">
+  <h3>{{actor.name}}: {{attributeLabel}}</h3>
+  {{#if skillName}}<p>{{localize "TIRAKAN.Roll.Skill"}}: {{skillName}} ({{skillRank}})</p>{{/if}}
+  <p>{{localize "TIRAKAN.Roll.Target"}}: {{target}} | {{localize "TIRAKAN.Roll.Modifier"}}: {{modifier}}</p>
+  <p><strong>{{resultText}}</strong> ({{localize "TIRAKAN.Roll.Margin"}} {{result.margin}})</p>
+  <p>{{localize "TIRAKAN.Roll.Consequence"}}: {{consequenceLabel}}</p>
+  {{#if flavor}}<p>{{flavor}}</p>{{/if}}
+</div>

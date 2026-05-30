@@ -1,0 +1,67 @@
+{
+  "id": "tirakan-essential",
+  "title": "Tirakan Essential",
+  "description": "A Foundry VTT system for the dark fantasy role playing game Tirakan Essential focused on rolls, consequences, character sheets, NSC sheets, and importing characters from the Tirakan Essential character manager at tirakan.de.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": 14,
+    "verified": 14
+  },
+  "authors": [
+    {
+      "name": "Tirakan Essential"
+    }
+  ],
+  "esmodules": [
+    "tirakan-essential-foundry.mjs"
+  ],
+  "styles": [
+    "styles/tirakan-essential.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": [
+          "biography",
+          "notes"
+        ]
+      },
+      "nsc": {
+        "htmlFields": [
+          "biography",
+          "notes"
+        ]
+      }
+    },
+    "Item": {
+      "weapon": {},
+      "armor": {},
+      "gear": {},
+      "spell": {
+        "htmlFields": [
+          "description"
+        ]
+      }
+    }
+  },
+  "socket": false,
+  "initiative": "1d100",
+  "grid": {
+    "distance": 1,
+    "units": "segment"
+  },
+  "primaryTokenAttribute": "resources.wounds",
+  "secondaryTokenAttribute": "resources.burden"
+}
