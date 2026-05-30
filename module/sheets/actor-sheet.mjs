@@ -1,4 +1,5 @@
 import { TIRAKAN } from "../config.mjs";
+import { SPELL_CASTING_LEVELS } from "../rolls.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets?.ActorSheetV2 ?? foundry.applications.api.DocumentSheetV2;
@@ -16,6 +17,7 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     actions: {
       changeTab: TirakanActorSheet.#changeTab,
       rollAttribute: TirakanActorSheet.#rollAttribute,
+      rollSpell: TirakanActorSheet.#rollSpell,
       addSkill: TirakanActorSheet.#addSkill,
       removeSkill: TirakanActorSheet.#removeSkill,
       addCondition: TirakanActorSheet.#addCondition,
@@ -30,7 +32,7 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
 
   static PARTS = {
     form: {
-      template: "systems/tirakan-essential-foundry/templates/actor/actor-sheet.hbs"
+      template: "systems/tirakan-essential/templates/actor/actor-sheet.hbs"
     }
   };
 
@@ -40,6 +42,7 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     const system = actor.system;
     const editingSection = this.editingSection ?? null;
     const activeTab = this.activeTab ?? "core";
+    const spellRows = this.#spellRows(actor);
     return {
       ...context,
       actor,
@@ -50,6 +53,7 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       activeTab,
       activeCoreTab: activeTab === "core",
       activeSkillsTab: activeTab === "skills",
+      activeSpellsTab: activeTab === "spells",
       activeConditionsTab: activeTab === "conditions",
       activeNotesTab: activeTab === "notes",
       tabs: [
@@ -64,6 +68,12 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
           icon: "fa-solid fa-list-check",
           label: game.i18n.localize("TIRAKAN.Section.Skills"),
           active: activeTab === "skills"
+        },
+        {
+          id: "spells",
+          icon: "fa-solid fa-wand-sparkles",
+          label: game.i18n.localize("TIRAKAN.Section.Spells"),
+          active: activeTab === "spells"
         },
         {
           id: "conditions",
@@ -106,6 +116,8 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
           selected: value === skill.rank
         }))
       })),
+      spellRows,
+      hasSpellRows: spellRows.length > 0,
       resourceRows: [
         { key: "wounds", label: game.i18n.localize("TIRAKAN.Resource.Wounds"), resource: system.resources.wounds },
         { key: "burden", label: game.i18n.localize("TIRAKAN.Resource.Burden"), resource: system.resources.burden },
@@ -153,6 +165,15 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     await this.document.rollAttribute(attribute);
   }
 
+  static async #rollSpell(event, target) {
+    const spellIndex = Number(target.dataset.spellIndex);
+    const spell = this.#spellRows(this.document)[spellIndex] ?? {};
+    const spellName = spell.name ?? target.dataset.spellName ?? "";
+    const levelKey = await chooseSpellCastingLevel();
+    if (!levelKey) return;
+    await this.document.rollSpell(spellName, { levelKey, description: spell.description ?? "" });
+  }
+
   static async #addSkill() {
     const skills = foundry.utils.deepClone(this.document.system.skills ?? []);
     skills.push({ name: "", rank: 1, usedReroll: false, usedIgnore: false });
@@ -185,6 +206,7 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       attributes: "core",
       resources: "core",
       skills: "skills",
+      spells: "spells",
       conditions: "conditions",
       notes: "notes"
     };
@@ -214,4 +236,88 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     const value = Number(target.dataset.value);
     await this.document.update({ [`system.resources.${resource}.value`]: value });
   }
+
+  #spellRows(actor) {
+    const itemRows = actor.items
+      .filter((item) => item.type === "spell")
+      .map((item, index) => ({
+        index,
+        name: item.name,
+        aspect: item.system.aspect,
+        category: item.system.category,
+        element: item.system.element,
+        minimumRoll: item.system.minimumRoll,
+        cost: item.system.cost,
+        range: item.system.range,
+        duration: item.system.duration,
+        area: item.system.area,
+        castingTime: item.system.castingTime || item.system.action,
+        resisted: item.system.resisted,
+        description: item.system.description
+      }));
+    if (itemRows.length > 0) return itemRows;
+
+    return (actor.system.supernatural?.spells ?? []).filter(Boolean).map((name, index) => {
+      const rule = TIRAKAN.spellRules.find((entry) => entry.name === name);
+      return {
+        index,
+        name,
+        aspect: rule?.aspect ?? "",
+        category: rule?.category ?? "",
+        element: rule?.element ?? "",
+        minimumRoll: rule?.minimumRoll ?? "",
+        cost: rule?.cost ?? "",
+        range: rule?.range ?? "",
+        duration: rule?.duration ?? "",
+        area: rule?.area ?? "",
+        castingTime: rule?.castingTime || rule?.action || "",
+        resisted: rule?.resisted ?? "",
+        description: rule?.description ?? ""
+      };
+    });
+  }
+}
+
+async function chooseSpellCastingLevel() {
+  const buttons = SPELL_CASTING_LEVELS.map((level) => ({
+    action: level.key,
+    label: game.i18n.localize(level.label)
+  }));
+  const content = `<div class="tirakan-spell-level-dialog">
+    <p>${game.i18n.localize("TIRAKAN.Magic.ChooseLevel")}</p>
+    <ul>
+      ${SPELL_CASTING_LEVELS.map((level) => `<li><strong>${game.i18n.localize(level.label)}</strong>: ${spellCastingLevelSummary(level)}</li>`).join("")}
+    </ul>
+  </div>`;
+
+  if (foundry.applications.api.DialogV2) {
+    return foundry.applications.api.DialogV2.wait({
+      window: { title: game.i18n.localize("TIRAKAN.Magic.ChooseLevel") },
+      content,
+      buttons,
+      rejectClose: false
+    });
+  }
+
+  return new Promise((resolve) => {
+    new Dialog({
+      title: game.i18n.localize("TIRAKAN.Magic.ChooseLevel"),
+      content,
+      buttons: Object.fromEntries(buttons.map((button) => [button.action, {
+        label: button.label,
+        callback: () => resolve(button.action)
+      }])),
+      close: () => resolve(null)
+    }).render(true);
+  });
+}
+
+function spellCastingLevelSummary(level) {
+  const ruleKeys = {
+    low: "TIRAKAN.Magic.Rule.Low",
+    normal: "TIRAKAN.Magic.Rule.Normal",
+    hard: "TIRAKAN.Magic.Rule.Hard",
+    catastrophic: "TIRAKAN.Magic.Rule.Catastrophic"
+  };
+  return game.i18n.localize(ruleKeys[level.key]);
 }

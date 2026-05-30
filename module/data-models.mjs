@@ -138,9 +138,13 @@ export class SpellDataModel extends BaseItemDataModel {
       aspect: new StringField({ required: true, blank: true, initial: "" }),
       category: new StringField({ required: true, blank: true, initial: "" }),
       element: new StringField({ required: true, blank: true, initial: "" }),
+      action: new StringField({ required: true, blank: true, initial: "" }),
+      minimumRoll: new StringField({ required: true, blank: true, initial: "" }),
       cost: new StringField({ required: true, blank: true, initial: "" }),
       range: new StringField({ required: true, blank: true, initial: "" }),
       duration: new StringField({ required: true, blank: true, initial: "" }),
+      area: new StringField({ required: true, blank: true, initial: "" }),
+      castingTime: new StringField({ required: true, blank: true, initial: "" }),
       resisted: new StringField({ required: true, blank: true, initial: "" })
     };
   }

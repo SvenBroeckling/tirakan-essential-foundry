@@ -152,6 +152,61 @@
         </section>
       </section>
 
+      <section class="sheet-page" data-tab="spells" data-active="{{activeSpellsTab}}">
+        <section class="panel spells">
+          <h2>
+            <span>{{localize "TIRAKAN.Section.Spells"}}</span>
+            <span class="rule-info">
+              <button type="button" class="tiny-edit rule-info-button" aria-label="{{localize 'TIRAKAN.Magic.CastingRules'}}"><i class="fa-solid fa-circle-info"></i></button>
+              <span class="rule-popover">
+                <strong>{{localize "TIRAKAN.Magic.CastingRules"}}</strong>
+                <span>{{localize "TIRAKAN.Magic.Rule.Flow"}}</span>
+                <span>{{localize "TIRAKAN.Magic.Rule.Low"}}</span>
+                <span>{{localize "TIRAKAN.Magic.Rule.Normal"}}</span>
+                <span>{{localize "TIRAKAN.Magic.Rule.Hard"}}</span>
+                <span>{{localize "TIRAKAN.Magic.Rule.Catastrophic"}}</span>
+                <span>{{localize "TIRAKAN.Magic.Rule.Roll"}}</span>
+                <span>{{localize "TIRAKAN.Magic.Rule.Results"}}</span>
+              </span>
+            </span>
+          </h2>
+          <div class="spell-list">
+            {{#if hasSpellRows}}
+              {{#each spellRows}}
+                <article class="spell-row">
+                  <div class="spell-row-title">
+                    <strong>{{name}}</strong>
+                    <span>{{aspect}}</span>
+                  </div>
+                  <dl class="spell-metrics">
+                    <div><dt>{{localize "TIRAKAN.Spell.Category"}}</dt><dd>{{category}}</dd></div>
+                    <div><dt>{{localize "TIRAKAN.Spell.Element"}}</dt><dd>{{element}}</dd></div>
+                    <div><dt>{{localize "TIRAKAN.Spell.Cost"}}</dt><dd>{{cost}}</dd></div>
+                    <div><dt>{{localize "TIRAKAN.Spell.Range"}}</dt><dd>{{range}}</dd></div>
+                    <div><dt>{{localize "TIRAKAN.Spell.Duration"}}</dt><dd>{{duration}}</dd></div>
+                    <div><dt>{{localize "TIRAKAN.Spell.Area"}}</dt><dd>{{area}}</dd></div>
+                    <div><dt>{{localize "TIRAKAN.Spell.CastingTime"}}</dt><dd>{{castingTime}}</dd></div>
+                    <div><dt>{{localize "TIRAKAN.Spell.Resisted"}}</dt><dd>{{resisted}}</dd></div>
+                  </dl>
+                  <div class="spell-card-actions">
+                    {{#if minimumRoll}}<b>MW {{minimumRoll}}</b>{{/if}}
+                    {{#if description}}
+                      <span class="spell-info">
+                        <button type="button" class="icon-button spell-info-button" aria-label="{{name}}"><i class="fa-solid fa-circle-info"></i></button>
+                        <span class="spell-info-popover">{{description}}</span>
+                      </span>
+                    {{/if}}
+                    <button type="button" class="icon-button" data-action="rollSpell" data-spell-index="{{index}}" data-spell-name="{{name}}" title="{{localize 'TIRAKAN.Magic.CastSpell'}}"><i class="fa-solid fa-dice-d20"></i></button>
+                  </div>
+                </article>
+              {{/each}}
+            {{else}}
+              <p class="empty-state">{{localize "TIRAKAN.Spell.None"}}</p>
+            {{/if}}
+          </div>
+        </section>
+      </section>
+
       <section class="sheet-page" data-tab="notes" data-active="{{activeNotesTab}}">
         <section class="panel notes">
           <h2><span>{{localize "TIRAKAN.Section.Notes"}}</span>{{#if editNotes}}<button type="button" class="tiny-edit" data-action="doneEdit">{{localize "TIRAKAN.Action.Done"}}</button>{{else}}<button type="button" class="tiny-edit" data-action="editSection" data-section="notes"><i class="fa-solid fa-pen"></i></button>{{/if}}</h2>

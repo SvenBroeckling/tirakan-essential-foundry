@@ -1,5 +1,5 @@
 import { TIRAKAN } from "./config.mjs";
-import { attributeTarget, rollCheck } from "./rolls.mjs";
+import { attributeTarget, rollCheck, rollSpell } from "./rolls.mjs";
 
 export class TirakanActor extends Actor {
   prepareDerivedData() {
@@ -38,6 +38,10 @@ export class TirakanActor extends Actor {
     return rollCheck(this, { attribute, ...options });
   }
 
+  async rollSpell(spellName, options = {}) {
+    return rollSpell(this, { spellName, ...options });
+  }
+
   async applyWounds(amount = 1) {
     const value = Number(this.system.resources.wounds.value) || 0;
     await this.update({ "system.resources.wounds.value": Math.max(0, value + Number(amount)) });
@@ -56,5 +60,9 @@ export class TirakanItem extends Item {
 
   get isArmor() {
     return this.type === "armor";
+  }
+
+  get isSpell() {
+    return this.type === "spell";
   }
 }

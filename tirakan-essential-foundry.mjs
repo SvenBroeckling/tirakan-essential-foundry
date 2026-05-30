@@ -4,6 +4,8 @@ import { CharacterDataModel, NscDataModel, WeaponDataModel, ArmorDataModel, Gear
 import { TirakanActorSheet } from "./module/sheets/actor-sheet.mjs";
 import { TirakanCharacterImporter } from "./module/importer.mjs";
 
+const SYSTEM_ID = "tirakan-essential";
+
 Hooks.once("init", () => {
   game.tirakan = {
     config: TIRAKAN,
@@ -36,13 +38,13 @@ Hooks.once("init", () => {
     }
   };
 
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, "tirakan-essential-foundry", TirakanActorSheet, {
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, SYSTEM_ID, TirakanActorSheet, {
     label: "TIRAKAN.Sheet.Actor",
     types: ["character", "nsc"],
     makeDefault: true
   });
 
-  game.settings.registerMenu("tirakan-essential-foundry", "importCharacter", {
+  game.settings.registerMenu(SYSTEM_ID, "importCharacter", {
     name: "TIRAKAN.Import.MenuName",
     label: "TIRAKAN.Import.MenuLabel",
     hint: "TIRAKAN.Import.MenuHint",
@@ -51,7 +53,7 @@ Hooks.once("init", () => {
     restricted: true
   });
 
-  game.settings.register("tirakan-essential-foundry", "welcomeImportHintShown", {
+  game.settings.register(SYSTEM_ID, "welcomeImportHintShown", {
     scope: "client",
     config: false,
     type: Boolean,
@@ -61,8 +63,8 @@ Hooks.once("init", () => {
 
 Hooks.once("ready", async () => {
   if (!game.user.isGM) return;
-  if (game.settings.get("tirakan-essential-foundry", "welcomeImportHintShown")) return;
+  if (game.settings.get(SYSTEM_ID, "welcomeImportHintShown")) return;
 
   ui.notifications.info(game.i18n.localize("TIRAKAN.Welcome.ImportHint"), { permanent: true });
-  await game.settings.set("tirakan-essential-foundry", "welcomeImportHintShown", true);
+  await game.settings.set(SYSTEM_ID, "welcomeImportHintShown", true);
 });

@@ -1,3 +1,5 @@
+import { TIRAKAN } from "./config.mjs";
+
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class TirakanCharacterImporter extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -21,7 +23,7 @@ export class TirakanCharacterImporter extends HandlebarsApplicationMixin(Applica
 
   static PARTS = {
     form: {
-      template: "systems/tirakan-essential-foundry/templates/apps/import-character.hbs"
+      template: "systems/tirakan-essential/templates/apps/import-character.hbs"
     }
   };
 
@@ -49,6 +51,7 @@ export class TirakanCharacterImporter extends HandlebarsApplicationMixin(Applica
         if (actor) await actor.update(actorData);
       }
       if (!actor) actor = await Actor.implementation.create(actorData);
+      await syncImportedSpells(actor, character);
 
       ui.notifications.info(game.i18n.format("TIRAKAN.Import.Success", { name: actor.name }));
       actor.sheet.render(true);
@@ -112,4 +115,42 @@ export function mapCharacterToActor(character, source, hash) {
       }
     }
   };
+}
+
+async function syncImportedSpells(actor, character) {
+  const spellNames = (character.supernatural?.spells ?? []).filter(Boolean);
+  const existingImportedSpells = actor.items.filter((item) => item.type === "spell" && item.getFlag("tirakan-essential", "importedSpell"));
+  if (existingImportedSpells.length > 0) {
+    await actor.deleteEmbeddedDocuments("Item", existingImportedSpells.map((item) => item.id));
+  }
+  if (spellNames.length === 0) return;
+
+  const spellItems = spellNames.map((name) => {
+    const rule = TIRAKAN.spellRules.find((entry) => entry.name === name);
+    return {
+      name,
+      type: "spell",
+      system: {
+        description: rule?.description ?? "",
+        aspect: rule?.aspect ?? "",
+        category: rule?.category ?? "",
+        element: rule?.element ?? "",
+        action: rule?.action ?? "",
+        minimumRoll: rule?.minimumRoll ?? "",
+        cost: rule?.cost ?? "",
+        range: rule?.range ?? "",
+        duration: rule?.duration ?? "",
+        area: rule?.area ?? "",
+        castingTime: rule?.castingTime ?? "",
+        resisted: rule?.resisted ?? ""
+      },
+      flags: {
+        "tirakan-essential": {
+          importedSpell: true
+        }
+      }
+    };
+  });
+
+  await actor.createEmbeddedDocuments("Item", spellItems);
 }
