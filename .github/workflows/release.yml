@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "*"
+      - "v*"
 
 permissions:
   contents: write
@@ -20,14 +20,15 @@ jobs:
       - name: Validate release version
         id: version
         run: |
-          TAG_VERSION="${GITHUB_REF_NAME}"
+          TAG_NAME="${GITHUB_REF_NAME}"
+          TAG_VERSION="${TAG_NAME#v}"
           PACKAGE_VERSION="$(node -p "require('./package.json').version")"
           SYSTEM_VERSION="$(node -p "require('./system.json').version")"
           SYSTEM_DOWNLOAD="$(node -p "require('./system.json').download")"
-          EXPECTED_DOWNLOAD="https://github.com/${GITHUB_REPOSITORY}/releases/download/${SYSTEM_VERSION}/tirakan-essential-foundry-${SYSTEM_VERSION}.zip"
+          EXPECTED_DOWNLOAD="https://github.com/${GITHUB_REPOSITORY}/releases/download/v${SYSTEM_VERSION}/tirakan-essential-foundry-${SYSTEM_VERSION}.zip"
 
-          if ! echo "${TAG_VERSION}" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "Tag (${TAG_VERSION}) must be the release version, for example 0.3.1." >&2
+          if ! echo "${TAG_NAME}" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Tag (${TAG_NAME}) must be the release version prefixed with v, for example v0.3.2." >&2
             exit 1
           fi
 
@@ -37,7 +38,7 @@ jobs:
           fi
 
           if [ "${TAG_VERSION}" != "${SYSTEM_VERSION}" ]; then
-            echo "Tag (${TAG_VERSION}) does not match manifest version (${SYSTEM_VERSION})." >&2
+            echo "Tag (${TAG_NAME}) does not match manifest version (${SYSTEM_VERSION})." >&2
             exit 1
           fi
 
@@ -68,4 +69,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: tirakan-essential-foundry-${{ steps.version.outputs.version }}.zip
-          name: Tirakan Essential ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
