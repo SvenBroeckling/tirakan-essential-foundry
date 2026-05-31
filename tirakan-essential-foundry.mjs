@@ -53,7 +53,7 @@ Hooks.once("init", () => {
     restricted: true
   });
 
-  game.settings.register(SYSTEM_ID, "welcomeImportHintShown", {
+  game.settings.register(SYSTEM_ID, "welcomeChatMessageShown", {
     scope: "client",
     config: false,
     type: Boolean,
@@ -63,8 +63,22 @@ Hooks.once("init", () => {
 
 Hooks.once("ready", async () => {
   if (!game.user.isGM) return;
-  if (game.settings.get(SYSTEM_ID, "welcomeImportHintShown")) return;
+  if (game.settings.get(SYSTEM_ID, "welcomeChatMessageShown")) return;
 
-  ui.notifications.info(game.i18n.localize("TIRAKAN.Welcome.ImportHint"), { permanent: true });
-  await game.settings.set(SYSTEM_ID, "welcomeImportHintShown", true);
+  await ChatMessage.create({
+    speaker: { alias: game.i18n.localize("TIRAKAN.Welcome.Title") },
+    content: welcomeChatContent()
+  });
+  await game.settings.set(SYSTEM_ID, "welcomeChatMessageShown", true);
 });
+
+function welcomeChatContent() {
+  return `<div class="tirakan-chat-card tirakan-welcome-card">
+    <h3>${game.i18n.localize("TIRAKAN.Welcome.Title")}</h3>
+    <ul>
+      <li>${game.i18n.localize("TIRAKAN.Welcome.ImportHint")}</li>
+      <li>${game.i18n.localize("TIRAKAN.Welcome.PdfHint")}</li>
+      <li>${game.i18n.localize("TIRAKAN.Welcome.LicenseHint")}</li>
+    </ul>
+  </div>`;
+}

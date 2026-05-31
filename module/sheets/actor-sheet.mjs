@@ -41,7 +41,8 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
     const actor = this.document;
     const system = actor.system;
     const editingSection = this.editingSection ?? null;
-    const activeTab = this.activeTab ?? "core";
+    const availableTabs = ["core", "skills", "spells", "notes"];
+    const activeTab = availableTabs.includes(this.activeTab) ? this.activeTab : "core";
     const spellRows = this.#spellRows(actor);
     return {
       ...context,
@@ -54,7 +55,6 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       activeCoreTab: activeTab === "core",
       activeSkillsTab: activeTab === "skills",
       activeSpellsTab: activeTab === "spells",
-      activeConditionsTab: activeTab === "conditions",
       activeNotesTab: activeTab === "notes",
       tabs: [
         {
@@ -76,12 +76,6 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
           active: activeTab === "spells"
         },
         {
-          id: "conditions",
-          icon: "fa-solid fa-heart-pulse",
-          label: game.i18n.localize("TIRAKAN.Section.Conditions"),
-          active: activeTab === "conditions"
-        },
-        {
           id: "notes",
           icon: "fa-solid fa-feather",
           label: game.i18n.localize("TIRAKAN.Section.Notes"),
@@ -96,6 +90,9 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       editNotes: editingSection === "notes",
       isCharacter: actor.type === "character",
       isNsc: actor.type === "nsc",
+      ancestryInfo: this.#markInfo(TIRAKAN.ancestryRules, system.ancestry),
+      pathInfo: this.#markInfo(TIRAKAN.pathRules, system.path),
+      bondInfo: this.#markInfo(TIRAKAN.bondRules, system.bond),
       attributeRows: TIRAKAN.attributes.map((attribute) => ({
         ...attribute,
         label: game.i18n.lang === "de" ? attribute.de : attribute.en,
@@ -207,7 +204,7 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
       resources: "core",
       skills: "skills",
       spells: "spells",
-      conditions: "conditions",
+      conditions: "core",
       notes: "notes"
     };
     this.activeTab = tabBySection[this.editingSection] ?? this.activeTab ?? "core";
@@ -240,7 +237,7 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
   #spellRows(actor) {
     const itemRows = actor.items
       .filter((item) => item.type === "spell")
-      .map((item, index) => ({
+      .map((item, index) => this.#spellRow({
         index,
         name: item.name,
         aspect: item.system.aspect,
@@ -259,7 +256,7 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
 
     return (actor.system.supernatural?.spells ?? []).filter(Boolean).map((name, index) => {
       const rule = TIRAKAN.spellRules.find((entry) => entry.name === name);
-      return {
+      return this.#spellRow({
         index,
         name,
         aspect: rule?.aspect ?? "",
@@ -273,8 +270,45 @@ export class TirakanActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) 
         castingTime: rule?.castingTime || rule?.action || "",
         resisted: rule?.resisted ?? "",
         description: rule?.description ?? ""
-      };
+      });
     });
+  }
+
+  #spellRow(row) {
+    return {
+      ...row,
+      metrics: [
+        { key: "cost", label: game.i18n.localize("TIRAKAN.Spell.Cost"), value: row.cost },
+        { key: "range", label: game.i18n.localize("TIRAKAN.Spell.Range"), value: row.range },
+        { key: "duration", label: game.i18n.localize("TIRAKAN.Spell.Duration"), value: row.duration },
+        { key: "area", label: game.i18n.localize("TIRAKAN.Spell.Area"), value: row.area }
+      ].filter((metric) => metric.value !== undefined && metric.value !== null && String(metric.value).trim() !== "")
+    };
+  }
+
+  #markInfo(rules, value) {
+    const name = String(value ?? "").trim();
+    if (!name) return null;
+    const rule = rules.find((entry) => entry.name === name);
+    if (!rule) return null;
+    const labelKeys = {
+      benefit: "TIRAKAN.Mark.Benefit",
+      vulnerability: "TIRAKAN.Mark.Vulnerability",
+      facet: "TIRAKAN.Mark.Facet",
+      skills: "TIRAKAN.Mark.Skills"
+    };
+    const orderedKeys = ["benefit", "vulnerability", "facet", "skills"];
+    const rowKeys = [
+      ...orderedKeys.filter((key) => key in rule),
+      ...Object.keys(rule).filter((key) => key !== "name" && !orderedKeys.includes(key))
+    ];
+    const rows = rowKeys.map((key) => ({
+      key,
+      label: labelKeys[key] ? game.i18n.localize(labelKeys[key]) : key,
+      value: rule[key]
+    })).filter((row) => row.value !== undefined && row.value !== null && String(row.value).trim() !== "");
+    if (rows.length === 0) return null;
+    return { name: rule.name, rows };
   }
 }
 

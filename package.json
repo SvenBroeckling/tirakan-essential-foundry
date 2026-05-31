@@ -1,6 +1,6 @@
 {
   "name": "tirakan-essential-foundry",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "A Foundry VTT system for Tirakan Essential.",
   "type": "module",
   "private": true,

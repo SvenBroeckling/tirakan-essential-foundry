@@ -91,6 +91,8 @@
 }
 
 .sheet-header {
+  position: relative;
+  z-index: 20;
   display: grid;
   grid-template-columns: 112px minmax(0, 1fr);
   gap: 14px;
@@ -162,11 +164,88 @@
   color: rgba(33, 28, 24, 0.82);
 }
 
+.identity-value {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.mark-info {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.mark-info-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  color: #69301f;
+  font-size: 11px;
+}
+
+.mark-info-popover {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 30;
+  width: min(360px, 70vw);
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px 12px;
+  color: var(--tirakan-ink);
+  border: 1px solid rgba(105, 48, 31, 0.38);
+  border-radius: 5px;
+  background:
+    linear-gradient(180deg, rgba(255, 250, 240, 0.98), rgba(236, 220, 190, 0.98)),
+    repeating-linear-gradient(0deg, rgba(33, 28, 24, 0.026) 0 1px, transparent 1px 5px);
+  box-shadow: 0 12px 28px rgba(33, 28, 24, 0.24);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+  overflow-wrap: normal;
+  transform: translateX(-50%);
+}
+
+.mark-info-popover b,
+.mark-info-popover span,
+.mark-info-label {
+  display: block;
+}
+
+.mark-info-popover b {
+  margin-bottom: 6px;
+  color: #4b2418;
+  font-size: 13px;
+}
+
+.mark-info-popover span + span {
+  margin-top: 7px;
+}
+
+.mark-info-label {
+  margin-bottom: 1px;
+  color: #69301f;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.mark-info:hover .mark-info-popover,
+.mark-info:focus-within .mark-info-popover {
+  display: block;
+}
+
 .sheet-grid {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .sheet-tab-layout {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex: 1 1 auto;
   min-height: 0;
@@ -491,10 +570,31 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(105, 48, 31, 0.16);
 }
 
-.conditions h2 {
-  flex: 0 0 calc(100% + 20px);
+.conditions h3 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  flex: 0 0 100%;
+  margin: 0 0 2px;
+  color: #4b2418;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.conditions h3 .tiny-edit {
+  min-width: 26px;
+  min-height: 22px;
+  padding: 2px 7px;
+  border-radius: 999px;
 }
 
 .condition-pill {
@@ -552,16 +652,19 @@
 
 .spell-row {
   display: grid;
-  grid-template-columns: minmax(130px, 1.1fr) minmax(0, 3fr) auto;
-  gap: 8px;
-  align-items: center;
-  padding: 7px 8px;
+  grid-template-columns: minmax(150px, 0.9fr) minmax(0, 1.6fr) auto;
+  gap: 10px;
+  align-items: stretch;
+  padding: 9px 10px;
   border: 1px solid rgba(105, 48, 31, 0.18);
   border-radius: 5px;
   background: rgba(255, 250, 240, 0.44);
 }
 
 .spell-row-title {
+  display: grid;
+  align-content: start;
+  gap: 3px;
   min-width: 0;
 }
 
@@ -575,6 +678,28 @@
   margin-top: 1px;
   color: rgba(75, 36, 24, 0.72);
   font-size: 12px;
+}
+
+.spell-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 3px;
+}
+
+.spell-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  margin: 0;
+  padding: 2px 6px;
+  border: 1px solid rgba(105, 48, 31, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 250, 240, 0.5);
+  color: rgba(75, 36, 24, 0.78);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.1;
 }
 
 .spell-card-actions {
@@ -624,28 +749,35 @@
 
 .spell-metrics {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 4px 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
   margin: 0;
 }
 
+.spell-metrics div {
+  min-width: 0;
+  padding: 5px 7px;
+  border: 1px solid rgba(105, 48, 31, 0.12);
+  border-radius: 4px;
+  background: rgba(255, 250, 240, 0.38);
+}
+
 .spell-metrics dt {
-  display: inline-block;
+  display: block;
   margin-bottom: 2px;
-  padding-bottom: 1px;
   color: #69301f;
-  border-bottom: 1px solid rgba(105, 48, 31, 0.24);
   font-size: 11px;
   font-weight: 700;
   line-height: 1.1;
   text-shadow: none;
-  text-transform: none;
+  text-transform: uppercase;
 }
 
 .spell-metrics dd {
   margin: 0;
   color: rgba(33, 28, 24, 0.92);
   font-weight: 600;
+  line-height: 1.2;
   overflow-wrap: anywhere;
 }
 
@@ -683,6 +815,21 @@
   border-left: 4px solid var(--tirakan-blood, #9b2f20);
   padding-left: 8px;
   font-family: Georgia, "Times New Roman", serif;
+}
+
+.tirakan-welcome-card h3 {
+  margin: 0 0 6px;
+  color: #4b2418;
+  font-size: 16px;
+}
+
+.tirakan-welcome-card ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.tirakan-welcome-card li + li {
+  margin-top: 5px;
 }
 
 @media (max-width: 760px) {

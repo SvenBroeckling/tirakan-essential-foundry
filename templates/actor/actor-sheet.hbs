@@ -23,15 +23,15 @@
           </label>
           <label>
             <span>{{localize "TIRAKAN.Field.Ancestry"}}</span>
-            {{#if editIdentity}}<input data-update="system.ancestry" type="text" value="{{system.ancestry}}" list="tirakan-ancestries" />{{else}}<strong>{{system.ancestry}}</strong>{{/if}}
+            {{#if editIdentity}}<input data-update="system.ancestry" type="text" value="{{system.ancestry}}" list="tirakan-ancestries" />{{else}}<strong class="identity-value">{{system.ancestry}}{{#if ancestryInfo}}<span class="mark-info"><button type="button" class="icon-button mark-info-button" aria-label="{{system.ancestry}}"><i class="fa-solid fa-circle-info"></i></button><span class="mark-info-popover"><b>{{ancestryInfo.name}}</b>{{#each ancestryInfo.rows}}<span><span class="mark-info-label">{{label}}</span>{{value}}</span>{{/each}}</span></span>{{/if}}</strong>{{/if}}
           </label>
           <label>
             <span>{{localize "TIRAKAN.Field.Path"}}</span>
-            {{#if editIdentity}}<input data-update="system.path" type="text" value="{{system.path}}" list="tirakan-paths" />{{else}}<strong>{{system.path}}</strong>{{/if}}
+            {{#if editIdentity}}<input data-update="system.path" type="text" value="{{system.path}}" list="tirakan-paths" />{{else}}<strong class="identity-value">{{system.path}}{{#if pathInfo}}<span class="mark-info"><button type="button" class="icon-button mark-info-button" aria-label="{{system.path}}"><i class="fa-solid fa-circle-info"></i></button><span class="mark-info-popover"><b>{{pathInfo.name}}</b>{{#each pathInfo.rows}}<span><span class="mark-info-label">{{label}}</span>{{value}}</span>{{/each}}</span></span>{{/if}}</strong>{{/if}}
           </label>
           <label>
             <span>{{localize "TIRAKAN.Field.Bond"}}</span>
-            {{#if editIdentity}}<input data-update="system.bond" type="text" value="{{system.bond}}" list="tirakan-bonds" />{{else}}<strong>{{system.bond}}</strong>{{/if}}
+            {{#if editIdentity}}<input data-update="system.bond" type="text" value="{{system.bond}}" list="tirakan-bonds" />{{else}}<strong class="identity-value">{{system.bond}}{{#if bondInfo}}<span class="mark-info"><button type="button" class="icon-button mark-info-button" aria-label="{{system.bond}}"><i class="fa-solid fa-circle-info"></i></button><span class="mark-info-popover"><b>{{bondInfo.name}}</b>{{#each bondInfo.rows}}<span><span class="mark-info-label">{{label}}</span>{{value}}</span>{{/each}}</span></span>{{/if}}</strong>{{/if}}
           </label>
           <label>
             <span>{{localize "TIRAKAN.Field.Century"}}</span>
@@ -108,6 +108,16 @@
             <span>{{localize "TIRAKAN.Derived.Faith"}} {{system.derived.faithLevel}}</span>
             <span>{{localize "TIRAKAN.Derived.Magic"}} {{system.derived.magicLevel}}</span>
           </div>
+          <div class="conditions">
+            <h3><span>{{localize "TIRAKAN.Section.Conditions"}}</span>{{#if editConditions}}<button type="button" class="tiny-edit" data-action="doneEdit">{{localize "TIRAKAN.Action.Done"}}</button>{{else}}<button type="button" class="tiny-edit" data-action="editSection" data-section="conditions"><i class="fa-solid fa-pen"></i></button>{{/if}}</h3>
+            {{#each conditionOptions}}
+              {{#if editing}}
+                <button type="button" data-action="{{action}}" data-condition="{{key}}" class="condition-pill {{#if active}}active{{/if}}">{{label}}</button>
+              {{else}}
+                <span class="condition-pill {{#if active}}active{{/if}}">{{label}}</span>
+              {{/if}}
+            {{/each}}
+          </div>
         </section>
       </section>
 
@@ -139,19 +149,6 @@
         </section>
       </section>
 
-      <section class="sheet-page" data-tab="conditions" data-active="{{activeConditionsTab}}">
-        <section class="panel conditions">
-          <h2><span>{{localize "TIRAKAN.Section.Conditions"}}</span>{{#if editConditions}}<button type="button" class="tiny-edit" data-action="doneEdit">{{localize "TIRAKAN.Action.Done"}}</button>{{else}}<button type="button" class="tiny-edit" data-action="editSection" data-section="conditions"><i class="fa-solid fa-pen"></i></button>{{/if}}</h2>
-          {{#each conditionOptions}}
-            {{#if editing}}
-              <button type="button" data-action="{{action}}" data-condition="{{key}}" class="condition-pill {{#if active}}active{{/if}}">{{label}}</button>
-            {{else}}
-              <span class="condition-pill {{#if active}}active{{/if}}">{{label}}</span>
-            {{/if}}
-          {{/each}}
-        </section>
-      </section>
-
       <section class="sheet-page" data-tab="spells" data-active="{{activeSpellsTab}}">
         <section class="panel spells">
           <h2>
@@ -177,19 +174,17 @@
                   <div class="spell-row-title">
                     <strong>{{name}}</strong>
                     <span>{{aspect}}</span>
+                    <div class="spell-tags">
+                      {{#if category}}<span>{{category}}</span>{{/if}}
+                      {{#if element}}<span>{{element}}</span>{{/if}}
+                    </div>
                   </div>
                   <dl class="spell-metrics">
-                    <div><dt>{{localize "TIRAKAN.Spell.Category"}}</dt><dd>{{category}}</dd></div>
-                    <div><dt>{{localize "TIRAKAN.Spell.Element"}}</dt><dd>{{element}}</dd></div>
-                    <div><dt>{{localize "TIRAKAN.Spell.Cost"}}</dt><dd>{{cost}}</dd></div>
-                    <div><dt>{{localize "TIRAKAN.Spell.Range"}}</dt><dd>{{range}}</dd></div>
-                    <div><dt>{{localize "TIRAKAN.Spell.Duration"}}</dt><dd>{{duration}}</dd></div>
-                    <div><dt>{{localize "TIRAKAN.Spell.Area"}}</dt><dd>{{area}}</dd></div>
-                    <div><dt>{{localize "TIRAKAN.Spell.CastingTime"}}</dt><dd>{{castingTime}}</dd></div>
-                    <div><dt>{{localize "TIRAKAN.Spell.Resisted"}}</dt><dd>{{resisted}}</dd></div>
+                    {{#each metrics}}
+                      <div data-metric="{{key}}"><dt>{{label}}</dt><dd>{{value}}</dd></div>
+                    {{/each}}
                   </dl>
                   <div class="spell-card-actions">
-                    {{#if minimumRoll}}<b>MW {{minimumRoll}}</b>{{/if}}
                     {{#if description}}
                       <span class="spell-info">
                         <button type="button" class="icon-button spell-info-button" aria-label="{{name}}"><i class="fa-solid fa-circle-info"></i></button>

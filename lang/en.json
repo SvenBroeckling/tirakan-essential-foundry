@@ -1,4 +1,6 @@
 {
+  "TYPES.Actor.character": "Character",
+  "TYPES.Actor.nsc": "NSC",
   "TIRAKAN.Action.AddSkill": "Add skill",
   "TIRAKAN.Action.Done": "Done",
   "TIRAKAN.Action.Remove": "Remove",
@@ -55,6 +57,10 @@
   "TIRAKAN.Magic.Rule.Normal": "Normal: no changes, spell strength 1.",
   "TIRAKAN.Magic.Rule.Results": "Results: critical success +2 spell strength; strong success +1; clean success works as described; narrow success works with a minor side effect; any failure has no intended effect and causes a side effect instead.",
   "TIRAKAN.Magic.Rule.Roll": "Finally, roll Gift with any modifiers. Costs are always paid, even if the spell fails.",
+  "TIRAKAN.Mark.Benefit": "Vorteil",
+  "TIRAKAN.Mark.Facet": "Facette",
+  "TIRAKAN.Mark.Skills": "Fertigkeiten",
+  "TIRAKAN.Mark.Vulnerability": "Verwundbarkeit",
   "TIRAKAN.Resource.Arkana": "Arkana",
   "TIRAKAN.Resource.Burden": "Burden",
   "TIRAKAN.Resource.Favor": "Favor",
@@ -92,6 +98,9 @@
   "TIRAKAN.Spell.Resisted": "Resisted",
   "TIRAKAN.Tab.Core": "Core",
   "TIRAKAN.Tab.Navigation": "Sheet pages",
-  "TIRAKAN.Welcome.ImportHint": "Welcome to Tirakan Essential. To import characters, open Game Settings > Configure Settings > Tirakan Essential > Import Tirakan Character.",
+  "TIRAKAN.Welcome.ImportHint": "Import characters through Game Settings > Configure Settings > Tirakan Essential > Import Tirakan Character.",
+  "TIRAKAN.Welcome.LicenseHint": "Tirakan Essential is an open-source RPG released under CC-BY-NC-SA.",
+  "TIRAKAN.Welcome.PdfHint": "You can find the RPG PDF on tirakan.de in the Downloads section as Regelbuch.",
+  "TIRAKAN.Welcome.Title": "Welcome to Tirakan Essential",
   "TIRAKAN.Sheet.Actor": "Tirakan Sheet"
 }

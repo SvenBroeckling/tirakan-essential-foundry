@@ -1,4 +1,6 @@
 {
+  "TYPES.Actor.character": "Charakter",
+  "TYPES.Actor.nsc": "NSC",
   "TIRAKAN.Action.AddSkill": "Fertigkeit hinzufuegen",
   "TIRAKAN.Action.Done": "Fertig",
   "TIRAKAN.Action.Remove": "Entfernen",
@@ -55,6 +57,10 @@
   "TIRAKAN.Magic.Rule.Normal": "Normal: keine Auswirkungen, Zauberstaerke 1.",
   "TIRAKAN.Magic.Rule.Results": "Ergebnisse: Kritischer Erfolg +2 Zauberstaerke; starker Erfolg +1; sauberer Erfolg wie erklaert; knapp geschafft mit geringem Nebeneffekt; Misserfolg: kein beabsichtigter Effekt, stattdessen Nebeneffekt.",
   "TIRAKAN.Magic.Rule.Roll": "Zuletzt wird mit eventuellen Modifikationen auf Gabe geworfen. Die Kosten werden immer bezahlt, auch wenn der Zauber fehlschlaegt.",
+  "TIRAKAN.Mark.Benefit": "Vorteil",
+  "TIRAKAN.Mark.Facet": "Facette",
+  "TIRAKAN.Mark.Skills": "Fertigkeiten",
+  "TIRAKAN.Mark.Vulnerability": "Verwundbarkeit",
   "TIRAKAN.Resource.Arkana": "Arkana",
   "TIRAKAN.Resource.Burden": "Buerde",
   "TIRAKAN.Resource.Favor": "Gunst",
@@ -92,6 +98,9 @@
   "TIRAKAN.Spell.Resisted": "Widerstand",
   "TIRAKAN.Tab.Core": "Kern",
   "TIRAKAN.Tab.Navigation": "Bogenseiten",
-  "TIRAKAN.Welcome.ImportHint": "Willkommen bei Tirakan Essential. Charaktere importierst du ueber Spieleinstellungen > Einstellungen konfigurieren > Tirakan Essential > Tirakan-Charakter importieren.",
+  "TIRAKAN.Welcome.ImportHint": "Charaktere importierst du ueber Spieleinstellungen > Einstellungen konfigurieren > Tirakan Essential > Tirakan-Charakter importieren.",
+  "TIRAKAN.Welcome.LicenseHint": "Tirakan Essential ist ein Open-Source-Rollenspiel unter CC-BY-NC-SA.",
+  "TIRAKAN.Welcome.PdfHint": "Das Rollenspiel-PDF findest du auf tirakan.de im Bereich Downloads als Regelbuch.",
+  "TIRAKAN.Welcome.Title": "Willkommen bei Tirakan Essential",
   "TIRAKAN.Sheet.Actor": "Tirakan-Bogen"
 }
