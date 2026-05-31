@@ -3,7 +3,10 @@
   "type": "system",
   "title": "Tirakan Essential",
   "description": "A Foundry VTT system for the dark fantasy role playing game Tirakan Essential focused on rolls, consequences, character sheets, NSC sheets, and importing characters from the Tirakan Essential character manager at tirakan.de.",
-  "version": "0.3.1",
+  "version": "0.3.2",
+  "url": "https://github.com/SvenBroeckling/tirakan-essential-foundry",
+  "manifest": "https://raw.githubusercontent.com/SvenBroeckling/tirakan-essential-foundry/main/system.json",
+  "download": "https://github.com/SvenBroeckling/tirakan-essential-foundry/releases/download/0.3.2/tirakan-essential-foundry-0.3.2.zip",
   "compatibility": {
     "minimum": 14,
     "verified": 14
